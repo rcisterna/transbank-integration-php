@@ -16,15 +16,15 @@
     @if(!$payments->isEmpty())
         <table>
             <tr>
-                <th>ID</th>
                 <th>Fecha</th>
                 <th>Monto</th>
+                <th>Estado</th>
             </tr>
             @foreach($payments as $payment)
                 <tr>
-                    <td>{{ $payment->id }}</td>
                     <td>{{ $payment->created_at }}</td>
-                    <td>{{ $payment->amount }}</td>
+                    <td>${{ number_format($payment->amount, 0, ',', '.') }}</td>
+                    <td>{{ \App\Payment::STATUS_DESC[$payment->status] }}</td>
                 </tr>
             @endforeach
         </table>

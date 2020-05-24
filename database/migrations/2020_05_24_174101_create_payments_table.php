@@ -17,6 +17,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('amount');
+            $table->unsignedSmallInteger('status')->default(0);
         });
     }
 
