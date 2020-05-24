@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  transbank: # Contenedor php + apache
+    build:
+      context: ./
+      dockerfile: ./docker/transbank.dockerfile
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 80:80
+    restart: always
