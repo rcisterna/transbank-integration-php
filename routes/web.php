@@ -11,6 +11,6 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+// Payment routes
+$router->get('/', ['as' => 'payments.index', 'uses' => 'PaymentController@index']);
+$router->post('/', ['as' => 'payments.store', 'uses' => 'PaymentController@store']);
