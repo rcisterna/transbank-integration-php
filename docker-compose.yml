@@ -1,12 +1,29 @@
 version: "3.7"
 
 services:
+  db: # Contenedor postgres
+    image: postgres
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    restart: always
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    restart: always
   transbank: # Contenedor php + apache
     build:
       context: ./
       dockerfile: ./docker/transbank.dockerfile
     volumes:
       - ./:/var/www/html/
+    entrypoint:
+      - bash
+      - ./docker/init.sh
     ports:
       - 80:80
+    depends_on:
+      - db
     restart: always
