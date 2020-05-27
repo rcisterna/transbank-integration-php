@@ -4,12 +4,44 @@
 namespace App\Http\Controllers;
 
 
+use Illuminate\Http\Request;
 use Transbank\Webpay\Configuration;
 use Transbank\Webpay\Webpay;
 use Transbank\Webpay\WebPayNormal;
 
 class WebpayPlusNormalController extends Controller
 {
+    /**
+     * Inicia el proceso de pago
+     *
+     * @param Request $request Datos de la petición entrante
+     * @param int $paymentId Identificador del pago
+     */
+    public function init(Request $request, int $paymentId)
+    {
+        //
+    }
+
+    /**
+     * Obtiene el resultado de pago
+     *
+     * @param Request $request Datos de la petición entrante
+     */
+    public function return(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Muestra el resultado de la compra
+     *
+     * @param Request $request Datos de la petición entrante
+     */
+    public function final(Request $request)
+    {
+        //
+    }
+
     /**
      * Instancia el objeto de transacción
      *

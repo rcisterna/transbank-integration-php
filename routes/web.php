@@ -14,3 +14,17 @@
 // Payment routes
 $router->get('/', ['as' => 'payments.index', 'uses' => 'PaymentController@index']);
 $router->post('/', ['as' => 'payments.store', 'uses' => 'PaymentController@store']);
+
+// Webpay Plus Normal routes
+$router->get(
+    '/webpayplus/normal/{paymentId}',
+    ['as' => 'webpayplus_normal.init', 'uses' => 'WebpayPlusNormalController@init']
+);
+$router->post(
+    '/webpayplus/normal/',
+    ['as' => 'webpayplus_normal.return', 'uses' => 'WebpayPlusNormalController@return']
+);
+$router->post(
+    '/webpayplus/normal/final',
+    ['as' => 'webpayplus_normal.final', 'uses' => 'WebpayPlusNormalController@final']
+);
