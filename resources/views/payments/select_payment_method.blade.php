@@ -9,6 +9,6 @@
 
 @section('content')
     <ul>
-        {{-- Agregar métodos de pago aquí --}}
+        <li><a href="{{ route('webpayplus_normal.init', ['paymentId' => $payment->id]) }}">Webpay Plus Normal</a></li>
     </ul>
 @endsection
