@@ -11,6 +11,11 @@ class WebpayplusNormalTransaction extends Model
         return $this->belongsTo('App\Payment');
     }
 
+    public function response()
+    {
+        return $this->hasOne('App\WebpayplusNormalResponse', 'webpayplus_normal_transaction_id');
+    }
+
     public function getBuyOrderAttribute()
     {
         return sprintf('tbk_%d_%d', $this->payment_id, $this->created_at->timestamp);
