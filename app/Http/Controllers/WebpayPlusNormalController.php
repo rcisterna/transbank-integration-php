@@ -127,13 +127,26 @@ class WebpayPlusNormalController extends Controller
     public function final(Request $request)
     {
         $token = $request->input('token_ws');
-        $db_transaction = WebpayplusNormalTransaction::where('token', $token)->first();
+        $db_transaction = null;
+        if ($token)
+        {
+            $db_transaction = WebpayplusNormalTransaction::where('token', $token)->first();
+        }
+
         if (!$db_transaction)
         {
             return redirect()->route('payments.index');
         }
-        $response = $db_transaction->response;
-        return view('webpayplus.normal.final', compact('response'));
+
+        switch ($db_transaction->payment->status)
+        {
+            case Payment::STATUS_WP_NORMAL_FINISH_SUCCESS:
+                $response = $db_transaction->response;
+                return view('webpayplus.normal.final', compact('response'));
+            case Payment::STATUS_WP_NORMAL_INIT_SUCCESS:
+            default:
+                return redirect()->route('payments.index');
+        }
     }
 
     /**
