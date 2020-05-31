@@ -13,6 +13,7 @@ class Payment extends Model
     public const STATUS_WP_NORMAL_FINISH_INVALID = 4;
     public const STATUS_WP_NORMAL_FINISH_ERROR = 5;
     public const STATUS_WP_NORMAL_FINISH_ABORT = 6;
+    public const STATUS_WP_NORMAL_FINISH_TIMEOUT = 7;
 
     public const STATUS_DESC = [
         self::STATUS_PENDING_PAYMENT => 'Pendiente de pago',
@@ -22,6 +23,7 @@ class Payment extends Model
         self::STATUS_WP_NORMAL_FINISH_INVALID => 'Error de validación al finalizar pago con Webpay Normal',
         self::STATUS_WP_NORMAL_FINISH_ERROR => 'Error al finalizar pago con Webpay Normal',
         self::STATUS_WP_NORMAL_FINISH_ABORT => 'Pago con Webpay Normal abortado',
+        self::STATUS_WP_NORMAL_FINISH_TIMEOUT => 'Pago con Webpay Normal cancelado por timeout',
     ];
 
     protected $fillable = ['amount'];

@@ -127,10 +127,22 @@ class WebpayPlusNormalController extends Controller
     public function final(Request $request)
     {
         $token = $request->input('token_ws', null) ?? $request->input('TBK_TOKEN', null);
+        $session_id = $request->input('TBK_ID_SESION', null);
+        $buy_order = $request->input('TBK_ORDEN_COMPRA', null);
+
         $db_transaction = null;
         if ($token)
         {
             $db_transaction = WebpayplusNormalTransaction::where('token', $token)->first();
+        }
+        elseif ($buy_order && $session_id)
+        {
+            $buy_order_exploded = explode('_', $buy_order);
+            $created_timestamp = array_pop($buy_order_exploded);
+            $db_transaction = WebpayplusNormalTransaction::where([
+                ['payment_id', $session_id],
+                ['created_at', Carbon::createFromTimestamp($created_timestamp)]
+            ])->first();
         }
 
         if (!$db_transaction)
@@ -146,11 +158,19 @@ class WebpayPlusNormalController extends Controller
             case Payment::STATUS_WP_NORMAL_INIT_SUCCESS:
                 $db_response = new WebpayplusNormalResponse;
                 $db_response->transaction()->associate($db_transaction);
-                $db_response->buy_order = $request->input('TBK_ORDEN_COMPRA');
-                $db_response->session_id = $request->input('TBK_ID_SESION');
+                $db_response->buy_order = $buy_order;
+                $db_response->session_id = $session_id;
                 $db_response->save();
 
-                $db_transaction->payment->status = Payment::STATUS_WP_NORMAL_FINISH_ABORT;
+                switch (count($request->all()))
+                {
+                    case 2:
+                        $db_transaction->payment->status = Payment::STATUS_WP_NORMAL_FINISH_TIMEOUT;
+                        break;
+                    case 3:
+                        $db_transaction->payment->status = Payment::STATUS_WP_NORMAL_FINISH_ABORT;
+                        break;
+                }
                 $db_transaction->payment->save();
             default:
                 return redirect()->route('payments.index');
