@@ -126,7 +126,7 @@ class WebpayPlusNormalController extends Controller
      */
     public function final(Request $request)
     {
-        $token = $request->input('token_ws');
+        $token = $request->input('token_ws', null) ?? $request->input('TBK_TOKEN', null);
         $db_transaction = null;
         if ($token)
         {
@@ -144,6 +144,14 @@ class WebpayPlusNormalController extends Controller
                 $response = $db_transaction->response;
                 return view('webpayplus.normal.final', compact('response'));
             case Payment::STATUS_WP_NORMAL_INIT_SUCCESS:
+                $db_response = new WebpayplusNormalResponse;
+                $db_response->transaction()->associate($db_transaction);
+                $db_response->buy_order = $request->input('TBK_ORDEN_COMPRA');
+                $db_response->session_id = $request->input('TBK_ID_SESION');
+                $db_response->save();
+
+                $db_transaction->payment->status = Payment::STATUS_WP_NORMAL_FINISH_ABORT;
+                $db_transaction->payment->save();
             default:
                 return redirect()->route('payments.index');
         }
