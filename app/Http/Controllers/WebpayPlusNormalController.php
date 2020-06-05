@@ -170,6 +170,9 @@ class WebpayPlusNormalController extends Controller
                     case 3:
                         $db_transaction->payment->status = Payment::STATUS_WP_NORMAL_FINISH_ABORT;
                         break;
+                    case 4:
+                        $db_transaction->payment->status = Payment::STATUS_WP_NORMAL_FINISH_FORM_ERROR;
+                        break;
                 }
                 $db_transaction->payment->save();
             default:
