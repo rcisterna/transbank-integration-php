@@ -28,3 +28,25 @@ $router->post(
     '/webpayplus/normal/final',
     ['as' => 'webpayplus_normal.final', 'uses' => 'WebpayPlusNormalController@final']
 );
+
+// Webpay Oneclick Normal routes
+$router->get(
+    '/oneclick/normal/{paymentId}',
+    ['as' => 'oneclick_normal.show', 'uses' => 'WebpayOneclickNormalController@showinscriptions']
+);
+$router->post(
+    '/oneclick/normal/{paymentId}/inscribe',
+    ['as' => 'oneclick_normal.inscribe', 'uses' => 'WebpayOneclickNormalController@initInscription']
+);
+$router->post(
+    '/oneclick/normal/{paymentId}/confirm',
+    ['as' => 'oneclick_normal.confirm', 'uses' => 'WebpayOneclickNormalController@confirmInscription']
+);
+$router->get(
+    '/oneclick/normal/{paymentId}/{userId}/remove',
+    ['as' => 'oneclick_normal.remove', 'uses' => 'WebpayOneclickNormalController@removeInscription']
+);
+$router->get(
+    '/oneclick/normal/{paymentId}/{userId}',
+    ['as' => 'oneclick_normal.authorize', 'uses' => 'WebpayOneclickNormalController@authorizePayment']
+);
