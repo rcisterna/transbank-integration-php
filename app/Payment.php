@@ -7,14 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     public const STATUS_PENDING_PAYMENT = 0;
-    public const STATUS_WP_NORMAL_INIT_SUCCESS = 1;
-    public const STATUS_WP_NORMAL_INIT_ERROR = 2;
-    public const STATUS_WP_NORMAL_FINISH_SUCCESS = 3;
-    public const STATUS_WP_NORMAL_FINISH_INVALID = 4;
-    public const STATUS_WP_NORMAL_FINISH_ERROR = 5;
-    public const STATUS_WP_NORMAL_FINISH_ABORT = 6;
-    public const STATUS_WP_NORMAL_FINISH_TIMEOUT = 7;
-    public const STATUS_WP_NORMAL_FINISH_FORM_ERROR = 8;
+
+    // Webpay Plus Normal status
+    public const STATUS_WP_NORMAL_INIT_SUCCESS = 11;
+    public const STATUS_WP_NORMAL_INIT_ERROR = 12;
+    public const STATUS_WP_NORMAL_FINISH_SUCCESS = 13;
+    public const STATUS_WP_NORMAL_FINISH_INVALID = 14;
+    public const STATUS_WP_NORMAL_FINISH_ERROR = 15;
+    public const STATUS_WP_NORMAL_FINISH_ABORT = 16;
+    public const STATUS_WP_NORMAL_FINISH_TIMEOUT = 17;
+    public const STATUS_WP_NORMAL_FINISH_FORM_ERROR = 18;
 
     public const STATUS_DESC = [
         self::STATUS_PENDING_PAYMENT => 'Pendiente de pago',
