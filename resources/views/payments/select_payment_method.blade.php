@@ -10,5 +10,6 @@
 @section('content')
     <ul>
         <li><a href="{{ route('webpayplus_normal.init', ['paymentId' => $payment->id]) }}">Webpay Plus Normal</a></li>
+        <li><a href="{{ route('oneclick_normal.show', ['paymentId' => $payment->id]) }}">Oneclick Normal</a></li>
     </ul>
 @endsection

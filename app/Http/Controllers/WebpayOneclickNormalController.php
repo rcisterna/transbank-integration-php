@@ -4,6 +4,8 @@
 namespace App\Http\Controllers;
 
 
+use App\OneclickNormalUser;
+use App\Payment;
 use Illuminate\Http\Request;
 use Transbank\Webpay\Configuration;
 use Transbank\Webpay\Webpay;
@@ -19,7 +21,12 @@ class WebpayOneclickNormalController extends Controller
      */
     public function showinscriptions(Request $request, int $paymentId)
     {
-        //
+        $payment = Payment::find($paymentId);
+        if (!$payment || $payment->status != Payment::STATUS_PENDING_PAYMENT)
+        {
+            return redirect()->route('payments.index');
+        }
+        return view('oneclick.normal.show', compact('paymentId'));
     }
 
     /**
@@ -30,7 +37,29 @@ class WebpayOneclickNormalController extends Controller
      */
     public function initInscription(Request $request, int $paymentId)
     {
-        //
+        $payment = Payment::find($paymentId);
+        if (!$payment || $payment->status != Payment::STATUS_PENDING_PAYMENT)
+        {
+            return redirect()->route('payments.index');
+        }
+
+        $user = OneclickNormalUser::create($request->all());
+        $transaction = self::getTransaction();
+        $response = $transaction->initInscription(
+            $user->username,
+            $user->email,
+            route('oneclick_normal.confirm', compact('paymentId'))
+        );
+
+        if (is_array($response))
+        {
+            $user->error = $response['detail'];
+            $user->save();
+            return redirect()->route('oneclick_normal.show', compact('paymentId'));
+        }
+        $user->token = $response->token;
+        $user->save();
+        return view('oneclick.normal.init', compact('response'));
     }
 
     /**
