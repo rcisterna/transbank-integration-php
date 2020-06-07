@@ -110,7 +110,24 @@ class WebpayOneclickNormalController extends Controller
      */
     public function removeInscription(Request $request, int $paymentId, int $userId)
     {
-        //
+        $payment = Payment::find($paymentId);
+        if (!$payment || $payment->status != Payment::STATUS_PENDING_PAYMENT)
+        {
+            return redirect()->route('payments.index');
+        }
+
+        $user = OneclickNormalUser::find($userId);
+        if (!$user)
+        {
+            return redirect()->route('oneclick_normal.show', compact('paymentId'));
+        }
+        $transaction = self::getTransaction();
+        $response = $transaction->removeUser($user->tbk_user, $user->username);
+        if ($response)
+        {
+            $user->delete();
+        }
+        return redirect()->route('oneclick_normal.show', compact('paymentId'));
     }
 
     /**
