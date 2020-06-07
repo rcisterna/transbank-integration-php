@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\OneclickNormalUser;
+use App\OneclickNormalUserResponse;
 use App\Payment;
 use Illuminate\Http\Request;
 use Transbank\Webpay\Configuration;
@@ -26,7 +27,9 @@ class WebpayOneclickNormalController extends Controller
         {
             return redirect()->route('payments.index');
         }
-        return view('oneclick.normal.show', compact('paymentId'));
+
+        $users = OneclickNormalUser::whereNotNull('tbk_user')->get();
+        return view('oneclick.normal.show', compact('paymentId', 'users'));
     }
 
     /**
@@ -70,7 +73,32 @@ class WebpayOneclickNormalController extends Controller
      */
     public function confirmInscription(Request $request, int $paymentId)
     {
-        //
+        $payment = Payment::find($paymentId);
+        if (!$payment || $payment->status != Payment::STATUS_PENDING_PAYMENT)
+        {
+            return redirect()->route('payments.index');
+        }
+
+        $user = OneclickNormalUser::where('token', $request->input('TBK_TOKEN'))->first();
+        if (!$user || !is_null($user->tbk_user))
+        {
+            return redirect()->route('oneclick_normal.show', compact('paymentId'));
+        }
+        $transaction = self::getTransaction();
+        $response = $transaction->finishInscription($user->token);
+
+        $db_response = new OneclickNormalUserResponse;
+        $db_response->user()->associate($user);
+        $db_response->authorization_code = $response->authCode;
+        $db_response->credit_card_type = $response->creditCardType;
+        $db_response->last_card_digits = $response->last4CardDigits;
+        $db_response->response_code = $response->responseCode;
+        $db_response->save();
+
+        $user->tbk_user = $response->tbkUser;
+        $user->save();
+
+        return redirect()->route('oneclick_normal.show', compact('paymentId'));
     }
 
     /**

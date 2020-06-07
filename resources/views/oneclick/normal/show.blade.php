@@ -15,4 +15,13 @@
             <button>Crear usuario</button>
         </form>
     </div>
+    @if(!$users->isEmpty())
+        <ul>
+            @foreach($users as $user)
+                <li>
+                    {{ $user->username }} ({{ $user->email }})
+                </li>
+            @endforeach
+        </ul>
+    @endif
 @endsection
