@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 
+use App\OneclickNormalAuthorization;
 use App\OneclickNormalUser;
 use App\OneclickNormalUserResponse;
 use App\Payment;
@@ -139,7 +140,48 @@ class WebpayOneclickNormalController extends Controller
      */
     public function authorizePayment(Request $request, int $paymentId, int $userId)
     {
-        //
+        $payment = Payment::find($paymentId);
+        if (!$payment || $payment->status != Payment::STATUS_PENDING_PAYMENT)
+        {
+            return redirect()->route('payments.index');
+        }
+
+        $user = OneclickNormalUser::find($userId);
+        if (!$user || is_null($user->tbk_user))
+        {
+            return redirect()->route('oneclick_normal.show', compact('paymentId'));
+        }
+
+        $authorization = new OneclickNormalAuthorization;
+        $authorization->payment()->associate($payment);
+        $authorization->user()->associate($user);
+        $authorization->save();
+
+        $transaction = self::getTransaction();
+        $response = $transaction->authorize(
+            $authorization->buy_order,
+            $authorization->user->tbk_user,
+            $authorization->user->username,
+            $authorization->payment->amount
+        );
+
+        if (is_null($response) || is_array($response))
+        {
+            $authorization->error = html_entity_decode($response['detail']);
+            $authorization->save();
+            $payment->status = Payment::STATUS_OC_NORMAL_AUTH_ERROR;
+            $payment->save();
+            return redirect()->route('payments.index');
+        }
+        $authorization->authorization_code = $response->authorizationCode;
+        $authorization->credit_card_type = $response->creditCardType;
+        $authorization->last_card_digits = $response->last4CardDigits;
+        $authorization->transaction_id = $response->transactionId;
+        $authorization->response_code = $response->responseCode;
+        $authorization->save();
+        $payment->status = Payment::STATUS_OC_NORMAL_AUTH_SUCCESS;
+        $payment->save();
+        return redirect()->route('payments.index');
     }
 
     /**

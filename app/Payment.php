@@ -18,6 +18,10 @@ class Payment extends Model
     public const STATUS_WP_NORMAL_FINISH_TIMEOUT = 17;
     public const STATUS_WP_NORMAL_FINISH_FORM_ERROR = 18;
 
+    // Oneclick Normal status
+    public const STATUS_OC_NORMAL_AUTH_SUCCESS = 21;
+    public const STATUS_OC_NORMAL_AUTH_ERROR = 22;
+
     public const STATUS_DESC = [
         self::STATUS_PENDING_PAYMENT => 'Pendiente de pago',
         self::STATUS_WP_NORMAL_INIT_SUCCESS => 'Pago con Webpay Normal iniciado',
@@ -28,6 +32,8 @@ class Payment extends Model
         self::STATUS_WP_NORMAL_FINISH_ABORT => 'Pago con Webpay Normal abortado',
         self::STATUS_WP_NORMAL_FINISH_TIMEOUT => 'Pago con Webpay Normal cancelado por timeout',
         self::STATUS_WP_NORMAL_FINISH_FORM_ERROR => 'Pago con Webpay Normal con error en formulario de pago',
+        self::STATUS_OC_NORMAL_AUTH_SUCCESS => 'Pago autorizado con OneClick Normal',
+        self::STATUS_OC_NORMAL_AUTH_ERROR => 'Error al autorizar pago con OneClick Normal',
     ];
 
     protected $fillable = ['amount'];

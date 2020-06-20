@@ -19,7 +19,9 @@
         <ul>
             @foreach($users as $user)
                 <li>
-                    {{ $user->username }} ({{ $user->email }})
+                    <a href="{{ route('oneclick_normal.authorize', ['paymentId' => $paymentId, 'userId' => $user->id]) }}">
+                        {{ $user->username }} ({{ $user->email }})
+                    </a>
                     -
                     <a href="{{ route('oneclick_normal.remove', ['paymentId' => $paymentId, 'userId' => $user->id]) }}">
                         Eliminar
